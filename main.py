@@ -5,22 +5,22 @@ import csv
 faanTable = {0: 0, 1: 0, 2: 0, 3: 8, 4: 16, 5: 24, 6: 32, 7: 46, 8: 64}
 
 winds = {1: "East", 2: "South", 3: "West", 0: "North"}
-playerNames = [0]
+playerNames = ["Round"]
 for a in winds:
-    name = str(input("Please input the name of player " + str(a) + ": \n"))
+    name = str(input("Please input the name of player " + winds[a] + ": \n"))
     playerNames.append(name)
 
 results = dict((el, 0) for el in playerNames)
-del results[0]
 
 # open csv file and print headers
 filename = (datetime.now().isoformat(timespec='hours'))
 with open('%s.csv' % filename, 'w+', newline='') as f:
     writer = csv.writer(f)
-    header = [playerNames]
-    for i in header:
-        writer.writerow(i)
-
+    fieldnames = []
+    for i in range(0,5):
+        fieldnames.append(playerNames[i])
+    writer = csv.writer(f)
+    writer.writerow(fieldnames)
 
 a = b = c = 1
 d = 0
@@ -91,17 +91,36 @@ while True:
     options = dict(zip(digitOptions, playerNames))
 
     # Calculate faan
+    roundResult = results
+    for i in roundResult:
+        roundResult[i] = 0
     if winner != 0:
         if loser == 0:
             if baoJimo == 0:
-                results[options[winner]] += faanTable[faan] * 2
-                for k in results:
-                    results[k] -= faanTable[faan] / 2
+                roundResult[options[winner]] += faanTable[faan] * 2
+                for k in roundResult:
+                    roundResult[k] -= faanTable[faan] / 2
             elif baoJimo == 1:
-                results[options[winner]] += faanTable[faan] * 1.5
-                results[options[unluckyGuy]] -= faanTable[faan] * 1.5
+                roundResult[options[winner]] += faanTable[faan] * 1.5
+                roundResult[options[unluckyGuy]] -= faanTable[faan] * 1.5
         elif loser != 0:
             if loser != 0:
-                results[options[winner]] += faanTable[faan]
-                results[options[loser]] -= faanTable[faan]
-    print("Results: " + str(results))
+                roundResult[options[winner]] += faanTable[faan]
+                roundResult[options[loser]] -= faanTable[faan]
+    results['Round'] = d
+    print("This round: " + str(roundResult))
+    writeLine = []
+    for i in range(0,5):
+        writeLine.append(roundResult[options[i]])
+    with open('%s.csv' % filename, 'a', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(writeLine)
+    with open('%s.csv' % filename, 'r') as f:
+        reader = csv.reader(f)
+        overall = list(reader)
+        for e in range(1,5):
+            sumList = []
+            for i in range(1,d+1):
+                sumList.append(int(overall[i][e]))
+            results[options[e]] = sum(sumList)
+    print("Total: " + str(results))
