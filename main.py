@@ -13,14 +13,14 @@ for a in winds:
 results = dict((el, 0) for el in playerNames)
 del results[0]
 
-# open csv file
+# open csv file and print headers
 filename = (datetime.now().isoformat(timespec='hours'))
 with open('%s.csv' % filename, 'w+', newline='') as f:
     writer = csv.writer(f)
     header = [playerNames]
     for i in header:
         writer.writerow(i)
-# print headers
+
 
 a = b = c = 1
 d = 0
