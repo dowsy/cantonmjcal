@@ -14,15 +14,14 @@ results = dict((el, 0) for el in playerNames)
 del results[0]
 
 # open csv file
-filename = (datetime.now().isoformat(timespec='minutes'))
+filename = (datetime.now().isoformat(timespec='hours'))
 with open('%s.csv' % filename, 'w+', newline='') as f:
     writer = csv.writer(f)
-    for i in playerNames:
-        writer.writerows(i)
+    header = [playerNames]
+    for i in header:
+        writer.writerow(i)
 # print headers
 
-
-# initial settings
 a = b = c = 1
 d = 0
 digitOptions = []
